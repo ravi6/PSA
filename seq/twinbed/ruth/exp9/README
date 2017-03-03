@@ -1,0 +1,57 @@
+This case is the anchor run where output flow matches the reported value.
+
+One keeps getting negative concentrations but it runs. The axial diffusion coefficienct
+is based on interstetial velocity at high pressure at feed end. @ peclet number of 500
+
+This run is done with no max or min clipping in sorbate adsorpotion rate calculations.
+
+While adjsting the outflow, found that the negative mole fractions crop up especially during
+blow down sequence. To eliminate these had to reduce the blow down rate ... which has 
+some effect on the product quality .
+
+Tried reducing the blow down rate by factor of 0.25, 0.35, 0.4, 0.45
+Beyond 0.35 factor, we get negative concentrations of the order of -0.03. At each purge cycle as
+a spike(lasting less than a second). Artifiact of convection dominated flow with sharp concentration front
+
+Axial dispersion in steady state models relatively constant for moderate changes in fluid velocity changes
+along the bed. But under unsteady state conditions, and with large changes in flow due to adsorption/desorption
+one need a more sophisticated means of specifying the axial dispersion.
+
+All of these results are with Bed saturation level of 50% at start
+Blow Down Reduction factor (in Cv Blowdown Valve)
+0.25  88.6 % O2    4.03cc/s Product    41.5cc/s Feed   // all compositions are in valid region
+The following have spikes that violate composition constraing 0<x<1   (by 1 to 3%)
+0.35   "            "                    "
+0.40  91.0          "                  44.0cc/s Feed
+0.45  "             "                   "
+
+With 0.25 reduction as acceptable ... given no violations ...
+
+Tried changing initial Bed saturation to  0. Problem refuses to integrate. When I change it to
+10% saturation. Prolem runs with no hastles. And as expected the cycling steady state data is
+very much in agreement with the previous run with 50% bed saturation. Some consolation.
+
+Observation:
+      Solver can not cope with large transients (that my cause high velocities or pressure gradients ..
+because of very low axial dispersion coeff. In reality this should be transient aswell ... what form it should
+take is still being investigated
+
+That aside we still don't get product quality as high as 96.2 as reported in the book.
+Product quality is only 88.5%
+And the feed rate is only 41.5 as opposed to 66.7
+
+Testing if the voidage should include particle voidage. That should push up
+feed rate. But when I changed the voidage .. problem fails to solve after 360sec.
+Well it did push down the feed rate and reduced product quality to 76%. Feed rate
+went down to 35.  b.t.w solution failures are due to media error when molefraction goes
+negative. Disabled the assertions to allow integration to completion.
+
+Well from now on we assume that the flows rates reported are not
+per bed. but instead for the whole system.
+As a consequence product flow per bed is half that is in the table.
+So is the input flow rate.
+
+With the above adjustment, tried to revisit case 1,6 and 9.
+with exp1 ... get excellent correspondence with experiment.
+exp6 ... good match with inflow, but much better product quality than experiment and model (99%)
+exp9 ... Not a good match with inflow, lower quality than experiment and model (90%O2)

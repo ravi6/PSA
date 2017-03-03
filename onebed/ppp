@@ -1,0 +1,13 @@
+#!/bin/bash
+   omplot "adsorber.yin_in[2] adsorber.yin_in[1]" $1 
+   omplot "adsorber.yin_out[2] adsorber.yin_out[1]" $1 
+   exit
+   omplot "adsorber.outlet.m_flow" $1
+   omplot "adsorber.y[10,2] adsorber.y[9,2] adsorber.y[8,2] adsorber.y[12,2]" $1 
+   omplot "adsorber.u[10] adsorber.u[9] adsorber.u[12]" $1 
+   omplot "adsorber.p[10] adsorber.p[9] adsorber.p[12]" $1 
+   omplot "adsorber.Q[11,2] adsorber.Q[6,2] adsorber.Q[12,2]" $1 
+   omplot "adsorber.Q[11,1] adsorber.Q[6,1] adsorber.Q[12,1]" $1 
+   omplot "adsorber.y[11,1] adsorber.y[6,1] adsorber.y[12,1]" $1 
+   omplot "adsorber.u[11] adsorber.u[6] adsorber.u[12]" $1 
+   omplot "adsorber.p[11] adsorber.p[6] adsorber.p[12]" $1 

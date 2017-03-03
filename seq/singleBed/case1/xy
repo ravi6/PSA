@@ -1,0 +1,6 @@
+#!/bin/bash
+   omplot "bedA.adsbr.y[11,1]  bedA.adsbr.y[6,1] bedA.adsbr.y[12,1]"  " "  "work/plant_res.mat"
+   omplot "bedA.adsbr.Q[11,1]  bedA.adsbr.Q[6,1] bedA.adsbr.Q[12,1]"  " "  "work/plant_res.mat"
+   omplot "bedA.adsbr.Q[11,2]  bedA.adsbr.Q[6,2] bedA.adsbr.Q[12,2]"  " "  "work/plant_res.mat"
+   omplot "bedA.adsbr.u[11]  bedA.adsbr.u[6] bedA.adsbr.u[12]"  " "  "work/plant_res.mat"
+   omplot "bedA.adsbr.inlet.m_flow  bedA.adsbr.outlet.m_flow"  " "  "work/plant_res.mat"

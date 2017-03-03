@@ -1,0 +1,9 @@
+#!/bin/bash
+resfile="work/plant_res.csv"
+omplot "vpurge.inlet.m_flow" " " ${resfile}
+omplot "vpurge.outlet.m_flow" " " ${resfile}
+exit
+   omplot "bedA.adsbr.outlet.Xi_outflow[1] bedB.adsbr.outlet.Xi_outflow[1]" " " ${resfile}
+   omplot "bedA.adsbr.inlet.m_flow  bedA.adsbr.outlet.m_flow  bedB.adsbr.inlet.m_flow  bedB.adsbr.outlet.m_flow" " " ${resfile}
+   omplot "bedA.adsbr.p_in bedA.adsbr.p_out bedB.adsbr.p_in bedB.adsbr.p_out" " " ${resfile}
+   omplot "bedA.adsbr.outlet.Xi_outflow[1] bedB.adsbr.outlet.Xi_outflow[1]"  " " ${resfile}

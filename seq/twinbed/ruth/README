@@ -1,0 +1,68 @@
+ single bed sim running very slow
+    
+ experiments with duel bed with purge
+ showed, the simulation speed is predominantly
+dictated by the Axial Dispersion.
+
+Changing the control volume size had very little effect
+on speed.
+
+
+    Currently running 10xDiff
+    Finished 100xDiff .. in 15 minutes
+
+time to go to bed.
+
+
+11th Jan. 2017
+    Finally getting somewherer. Rectified the error in mass flow rate
+calculation due to use of improper superficial velocity. U instead of
+U*Voidage  ..  
+    Now I can get correspondence with Ruth's reference data page 187.
+I needed to use Peclet number of 250 instead of 500 for the simulation to
+run faster. Run2 directory has the results. Run1 had outlet valve setting to
+get half the out flow rate specified in the book. I get poor recovery. Because
+I am not drawing the product I make :)))
+   I am now certain that the flows given in the book  are per bed. phew.
+Run 2 has same purge valve setting as Run 1. Now it is also clear that the adsorption
+pressure reported is the avg. pressure during feeding stage at pseudo steady state.
+ 
+Run 2 took about 5.5hors to complete. 2000 sec simulation. 
+
+Run 3 ran for 200 sec. with slower valves to see if it simulates any
+faster or gives any diifferent results. No change observed between 
+previous run and this one.
+
+Run 4 is another run of 3 with much slower valve response 2wice more.
+at 200 sec, this gives better product quality than earlier run, and consumesless air.
+
+=========================================================
+Moving to High  pressure runs
+=========================================================
+Lot of explorations :  
+     Problem started to blow up with no reason since I removed sign check
+in fluid density calculation in the valve equation. Wasted lots of runs with
+low axial dispersion at high pressures thinking that something sinister was
+happening with high pressure runs.
+    In the wash, introduced individual Collocation Coeff. types to better
+specify proper ranges to the coefficients. Weirdly, even when coef. values exceed
+the speciified range we don't get warnings. Not very clear as to how warnings are
+piped to the output. Are they being lost??
+
+Now it is clear the valve equation should protect against negative
+square roots. Solution path unstable if you don't have it.
+
+
+
+Run5 >>> High pressure run at 4bar, 160sec cycle time
+         Diffusivity set at 1.5e-4. Slow run but converges surely.
+         Using much less air than reported value. Product quality is
+         a bit lower. Recovery is far better than reported value.
+  Linear depressurization and pressurization cycle .. valves tuned
+to give.
+
+Run 6 >>>  Tried doubling Axial dispersion .. it dropped recovery 
+to 20% with avg. O2 to 67%. All flow rates are similar to Run5. The
+run speeds up. but ...
+
+

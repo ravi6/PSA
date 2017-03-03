@@ -1,0 +1,105 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{empheq}
+\usepackage[most]{tcolorbox}
+
+\usepackage{geometry}
+ \geometry{a4paper, total={170mm,257mm},
+           left=20mm, top=20mm
+        }
+
+%% My macros to ease wirting differential operators etc.
+%%     facilitate chain rule differentiation der(uv)
+%%   and der(udv) templates
+
+\newcommand{\ddz}[1]{\frac{\partial{#1}}{\partial{z}}}
+\newcommand{\ddt}[1]{\frac{\partial{#1}}{\partial{t}}}
+\newcommand{\ddzz}[1]{\frac{\partial^{2}{#1}}{\partial z^{2}}}
+\newcommand{\ddzuv}[2]{{#2}\ddz{#1} + {#1}\ddz{#2}}
+\newcommand{\ddzudv}[2]{\ddz{#2}\ddz{#1} + {#1}\ddzz{#2}}
+\newcommand{\diffty}{\mathcal{D}_L}
+
+%%tcbset{colback=Salmon!50!white,colframe=FireBrick!75!black,
+%%       width=(\linewidth-8mm)/2, before=, after=\hfill,
+%%       equal height group=ske}
+
+
+\begin{document}
+\title{Adsorber Model Equations Derivation}
+\maketitle
+
+\begin{tcblisting}{title=Showing \LaTeX\  code with powerful \it tcolorbox }
+\begin{empheq}[box=\tcbhighmath]{equation*}
+  \begin{split}
+    -\diffty \ddzz{c_i} +  \ddz{(uc_i)}  + \ddt{c_i} + S_i = 0 \\
+    -\diffty \ddzz{(Cy_i)} +  \ddzuv{u}{c_i} + \ddt{c_i} + S_i = 0 \\
+    -\diffty \ddz{(\ddzuv{C}{y_i})} + \ddzuv{u}{c_i}  + \ddt{c_i} + S_i = 0 \\
+    -\diffty \left \{ \ddzudv{y_i}{C} + \ddzudv{C}{y_i} \right \}  
+        + \ddzuv{u}{c_i}  + \ddt{c_i} + S_i = 0 \\
+  \end{split}
+\end{empheq}
+\end{tcblisting}
+
+
+
+\begin{empheq}[box=\tcbhighmath]{equation*}
+  \begin{split}
+    -\diffty \left\{ C \ddzz{y_i} + 2 \ddz{C} \ddz{y_i} + y_i \ddzz{C} \right \}
+        + \ddzuv{u}{c_i}  + \ddt{c_i} + S_i = 0 \\
+    -\diffty \left\{ C \ddzz{y_i} + 2 \ddz{C} \ddz{y_i} + y_i \ddzz{C} \right \}
+        + C y_i \ddz{u} + u \left \{ \ddzuv{C}{y_i} \right \} 
+	+ C \ddt{y_i}  + y_i \ddt{C} + S_i = 0  \\
+     C \left \{ \ddt{y_i} + y_i \ddz{u} + u \ddz{y_i} \right \}
+	+ uy_i\ddz{C} + y_i\ddt{C}
+        -\diffty \left\{ C \ddzz{y_i} + 2 \ddz{C} \ddz{y_i} + y_i \ddzz{C} \right \}
+        + S_i = 0 \\
+     C \left \{ \ddt{y_i} + y_i \ddz{u} + u \ddz{y_i} \right \}
+        + y_i \left\{ u\ddz{C} + \ddt{C} \right \}
+        -\diffty \left\{ C \ddzz{y_i} + 2 \ddz{C} \ddz{y_i} + y_i \ddzz{C} \right \}
+        + S_i = 0 \\ 
+  \end{split}
+\end{empheq}
+
+
+
+\begin{empheq}[box=\tcbhighmath]{equation*}
+  \begin{split}
+    \text{Rearranging}  \\
+     C \left \{ \ddt{y_i} + u \ddz{y_i} \right \}
+       + y_i \left\{ C\ddz{u} + u\ddz{C} + \ddt{C} \right \}
+       -\diffty \left\{ C \ddzz{y_i} + 2 \ddz{C} \ddz{y_i} + y_i \ddzz{C} \right \}
+       + S_i = 0 \\ 
+     C \left \{ \ddt{y_i} +
+       u \ddz{y_i} \right \}
+       + y_i \left \{ \ddz{(Cu)} + \ddt{C} \right \}
+       -\diffty \left\{ C \ddzz{y_i} + 2 \ddz{C} \ddz{y_i} + y_i \ddzz{C} \right \}
+       + S_i = 0 
+  \end{split}
+\end{empheq}
+
+
+\begin{empheq}[box=\tcbhighmath]{equation*}
+  \begin{split}
+    \text{Total Mass Blance} \\
+      \ddt{C} + \ddz{(Cu)} + \sum{S_i} = 0 \\
+      \text{Now Component Balance can be written as} \\
+    C \left \{ \ddt{y_i} + u \ddz{y_i} \right \} - y_i \sum{S_i}
+     -\diffty \left\{ C \ddzz{y_i} + 2 \ddz{C} \ddz{y_i} + y_i \ddzz{C} \right \}
+     + S_i = 0 \\
+    C \left \{ \ddt{y_i} + u \ddz{y_i} \right \} 
+        -\diffty \left\{ C \ddzz{y_i} + 2 \ddz{C} \ddz{y_i} + y_i \ddzz{C} \right \}
+      + S_i - y_i \sum{S_i}= 0 
+    \end{split}
+\end{empheq}
+
+
+Another way
+\begin{empheq}[box=\tcbhighmath]{equation*}
+\begin{align}
+    -\diffty \left \{ \ddzudv{y_i}{C} + \ddzudv{C}{y_i} \right \}  
+    + \ddzuv{(Cu)}{y_i}  + \ddt{(Cy_i)} + S_i = 0  \\
+    -\diffty \left \{ \ddzudv{y_i}{C} + \ddzudv{C}{y_i} \right \}  
+    + y_i \ddz{(Cu)} + Cu \ddz{y_i}  + y_i \ddt{C} + C \ddt{y_i} + S_i = 0 
+\end{align}
+ \end{empheq}
+\end{document}

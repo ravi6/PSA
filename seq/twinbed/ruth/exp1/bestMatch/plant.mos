@@ -1,0 +1,127 @@
+/*  A simple script Template to run my Plant Model
+          Author: Ravi Saripalli
+	  Date:   23th Jul. 2015
+       
+    Highly Simplified ... and easy to read 
+*/  
+
+/***************     Load Library and Models   *********/
+echo(false);
+N := 6; tEnd := 2000; stepSize:=1 ; //iniStepSize:=1;
+ans := system("zenity --question --text Simulate? >& /dev/null");
+sim := if ans == 0 then true else false;
+//print(getSettings()); 
+print("\n\n****** Loading of packages etc. *****\n\n");
+ThermoLib := "/home/ravi/hobby/chem/om/ThermoS/package.mo";
+for f in {ThermoLib, "plant.mo", "bed.mo", "seqSkarstrom.mo" } loop
+	if(loadFile(f)) then
+	   print ( f + " Loaded\n");
+	else
+	   print(f + " Load Failed\n" + getErrorString());
+	   exit(1);
+	end if;
+end for ;
+print("\n\n****** Loading Done *****\n\n");
+
+if (sim) then
+
+print("Saving Total Model in total.mo \n") ;
+saveTotalModel("total.mo",plant); // gives stand alone mo file to send out for debug reports.
+//setIndexReductionMethod("dynamicStateSelection");
+setCommandLineOptions("-lv=LOG_DASSL +d=initialization,dumpDAElow,bltdump"); // pickup initialization errrors
+
+/************ Cleanup Work **********/
+print("Cleaning Up Work Area\n") ; system("rm work/*"); cd("./work");   system("pwd");
+
+//flags :=  " -lv=LOG_LS,LOG_INIT,LOG_NLS  -w " ;  
+// flags:="-w  -lv=LOG_DASSL -abortSlowSimulation " ;
+
+echo(true);
+print("Starting the Plant \n");
+buildModel(plant , outputFormat="csv", 
+         stopTime=tEnd, stepSize=stepSize, // numberOfIntervals=1000,// tolerance=1e-3, iniStepSize=iniStepSize, 
+         simflags=flags /*cflags="-ffloat-store -g -O2 -fopenmp"*/ ) ;
+
+getErrorString();
+   print("Built  Simulation\n");
+   exit(1);
+else
+   print("Skipping Simulation\n");
+   cd("./work");
+//   system("./plant");
+end if ;  // Skip simulation
+print("Plotting\n");
+// Sample at desired times and save data in files for octave
+echo(true); // you need both echo and getErrorString() weird ...
+outFile := "junk.mo"; 
+//ts := {0.1, 0.2, 0.4, 0.6, 0.8, 1.0} * tEnd  ;
+ts := {100, 200};
+//ts := {1.0, 1.0, 1.0, 1.0, 1.0, 1} * tEnd;
+for i in 1:7 loop
+    ans := writeFile(outFile, "package pSave extends ThermoS.Util.DataSave(outFile=\"data" +
+                      String(i) + "\", resFile=\"plant_res.mat\", sTime=" + String(ts[i]) + "); \n" +
+                     "end pSave;", false);
+    getErrorString(); loadFile("junk.mo"); getErrorString();
+    pSave.saveVars({"time"});
+    for prefix in {"bedA.adsbr.", "bedB.adsbr."} loop
+        pSave.saveVars({prefix+"p_in"});
+        pSave.saveArray(prefix+"zs", N, 0); pSave.saveArray(prefix+"u", N, 0);
+        pSave.saveArray(prefix+"p", N, 0);
+        pSave.saveArray(prefix+"y", N, 1); pSave.saveArray(prefix+"Q", N, 2);
+        pSave.saveArray(prefix+"S", N, 2);
+        pSave.saveArray(prefix+"Coef_y", N, 1) ;
+        pSave.saveArray(prefix+"Coef_p",N, 0) ;
+        pSave.saveArray(prefix+"Coef_u",N, 0) ;
+        pSave.saveArray(prefix+"Coef_Q",N, 2) ;
+        pSave.saveArray(prefix+"Qeq",N, 2) ;
+        pSave.saveVars({prefix+"inlet.m_flow", prefix+"outlet.m_flow"});
+    end for;
+
+end for ;
+// readSimulationResultVars("plant_res.mat");
+//   Plotting etc.
+plot({bedA.adsbr.inlet.m_flow, bedA.adsbr.outlet.m_flow},
+       curveWidth=2, externalWindow=true, title = "bedA.adsbr - Flow Rate kg/s");
+system("sleep 1");
+plot({bedA.adsbr.outlet.Xi_outflow[1], bedA.adsbr.inlet.Xi_outflow[1],src.port.Xi_outflow[1]},
+       curveWidth=2, externalWindow=true, title = "bedA.adsbr - N2 Mass Fraction");
+system("sleep 1");
+plot({bedA.adsbr.p_in, bedA.adsbr.p_out},
+       curveWidth=2, externalWindow=true, title = "bedA.adsbr - Pressures");
+system("sleep 1");
+
+plot({bedB.adsbr.inlet.m_flow, bedB.adsbr.outlet.m_flow},
+       curveWidth=2, externalWindow=true, title = "bedB - Flow Rate kg/s");
+system("sleep 1");
+plot({bedB.adsbr.outlet.Xi_outflow[1], bedB.adsbr.inlet.Xi_outflow[1], src.port.Xi_outflow[1]},
+       curveWidth=2, externalWindow=true, title = "bedB - N2 Mass Fraction");
+system("sleep 1");
+plot({bedB.adsbr.p_in, bedB.adsbr.p_out},
+       curveWidth=2, externalWindow=true, title = "bedB - Pressures");
+system("sleep 1");
+print(getErrorString());
+
+/*
+echo(false);
+
+str1:="
+OMPlot --filename=\"plant_res.mat\" --curve-width=2 --new-window=false \
+       --title=\"Flow Rate kg/s\" bedA.adsbr.inlet.m_flow bedA.adsbr.outlet.m_flow ";
+
+str2:="
+OMPlot --filename=\"plant_res.mat\" --curve-width=2 --new-window=false \
+       --title=\"N2 Mass Fraction\" bedA.adsbr.outlet.Xi_outflow[1] ";
+
+system(str1 + "\n" + str2);
+*/
+
+//setCommandLineOptions("+d=bltdump"); // pickup initialization errrors
+//setCommandLineOptions("+d=addDerAliases");  // Don't know this
+//setCommandLineOptions("+d=noTearing");
+//flags := flags + " -overrideFile ../init ";
+//setCommandLineOptions("+d=dumpdaelow,bltdump");
+// setCommandLineOptions("+d=bltdump");
+//OpenModelica.Scripting.setTearingMethod("omcTearing");
+//OpenModelica.Scripting.setMatchingAlgorithm("omc");
+// OpenModelica.Scripting.setIndexReductionMethod("dummyDerivatives");
+//setCommandLineOptions("+d=noTearing");
