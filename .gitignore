@@ -1,4 +1,4 @@
-# ignore any work or ignore directory 
+# ignore any work directory 
 **/work
 # ignore editor backup files
 *~
