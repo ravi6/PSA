@@ -1,0 +1,6 @@
+#!/bin/bash
+   omplot "adsorber.inlet.m_flow  adsorber.outlet.m_flow " 
+   omplot "adsorber.p_in adsorber.p_out"
+   omplot "adsorber.inlet.Xi_outflow[1] adsorber.outlet.Xi_outflow[1]" 
+   omplot "adsorber.u[11]  adsorber.u[6] adsorber.u[12]" 
+   omplot "adsorber.p[11]  adsorber.p[6] adsorber.p[12]" 

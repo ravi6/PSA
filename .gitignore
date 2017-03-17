@@ -1,0 +1,8 @@
+# ignore any work or ignore directory 
+**/work
+# ignore editor backup files
+*~
+# ignore object or library files
+.[oa]
+#Symbolic link file
+ThermoS

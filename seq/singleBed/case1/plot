@@ -1,0 +1,7 @@
+#!/bin/bash
+   omplot "bedA.adsbr.inlet.m_flow  bedA.adsbr.outlet.m_flow " 
+   omplot "bedA.adsbr.p_in bedA.adsbr.p_out"
+   omplot "bedA.adsbr.inlet.Xi_outflow[1] bedA.adsbr.outlet.Xi_outflow[1]" 
+   omplot "bedA.adsbr.u[11]  bedA.adsbr.u[6] bedA.adsbr.u[12]" 
+   omplot "bedA.adsbr.p[11]  bedA.adsbr.p[6] bedA.adsbr.p[12]" 
+   omplot "bedA.seq.purging bedA.seq.pressurizing bedA.seq.feeding"

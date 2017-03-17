@@ -1,0 +1,6 @@
+ datafile=$1
+ OMPlot   --filename=$datafile bedA.adsbr.u[12]  bedB.adsbr.u[12] --curve-width=2 --new-window=true 
+ OMPlot   --filename=$datafile bedA.adsbr.p_out  bedB.adsbr.p_out --curve-width=2 --new-window=true 
+ OMPlot   --filename=$datafile bedA.adsbr.inlet.Xi_outflow[1]  bedB.adsbr.inlet.Xi_outflow[1] --curve-width=2 --new-window=true 
+ OMPlot   --filename=$datafile bedA.adsbr.outlet.Xi_outflow[1]  bedB.adsbr.outlet.Xi_outflow[1] --curve-width=2 --new-window=true 
+ OMPlot   --filename=$datafile bedA.adsbr.outlet.m_flow  bedB.adsbr.outlet.m_flow --curve-width=2 --new-window=true 

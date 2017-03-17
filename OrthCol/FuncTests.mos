@@ -1,0 +1,14 @@
+print("\n\n****** Loading of packages etc. *****\n\n");
+//ThermoLib := "/home/ravi/DSTO/projects/Om/ThermoS/package.mo";
+//for f in {ThermoLib, "plant.mo", "../Chebychev.mo"} loop
+for f in {"../Chebychev.mo"} loop
+	if(loadFile(f)) then
+	   print ( f + " Loaded\n");
+	else
+	   print(f + " Load Failed\n" + getErrorString());
+	   exit(1);
+	end if;
+end for ;
+print("\n\n****** Loading Done *****\n\n");
+f := Chebychev.sTi(20) ;
+

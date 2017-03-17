@@ -1,0 +1,16 @@
+#!/bin/bash
+
+omplot "bedA.vin.prat bedA.vout.prat bedA.vpurge.prat --ylabel=prat"
+omplot "src.port.m_flow sink.port.m_flow atm.port.m_flow --ylabel=mflow"
+
+omplot "bedA.adsbr.y[1,2] bedA.adsbr.y[6,2] bedA.adsbr.y[12,2] --ylabel=y_O2"
+omplot "bedA.adsbr.p[1] bedA.adsbr.p[6] bedA.adsbr.p[12] --ylabel=p"
+omplot "bedA.adsbr.Q[1,1] bedA.adsbr.Q[6,1] bedA.adsbr.Q[12,1] --ylabel=Q_N2"
+omplot "bedA.adsbr.Q[1,2] bedA.adsbr.Q[6,2] bedA.adsbr.Q[12,2] --ylabel=Q_O2"
+omplot "bedA.adsbr.inlet.m_flow bedA.adsbr.outlet.m_flow --ylabel=kg/s"
+exit
+omplot "bedA.adsbr.y[6,2] --ylabel=O2 " work/new2.mat
+omplot "bedA.adsbr.y[6,2] --ylabel=O2 " work/plant_res.mat
+omplot "bedA.seq.feeding --ylabel=feeding " work/new2.mat
+omplot "bedA.seq.feeding --ylabel=feeding " work/plant_res.mat
+exit

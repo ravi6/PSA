@@ -1,0 +1,60 @@
+Default Cycle 10 + 10 + 20
+   Single Bed Simulation ....
+Clock Granularity 1sec
+(Discrete Event)
+
+Feed Pressure 3 bar
+Product Pressure 2 bar
+Purge   Pressure 1 bar
+
+All Valve cvs set to 0.004/sqrt(0.5e5)
+
+After 10 cycles Bed pressure levels off at 2.4bar
+Outflow (product) =  0.006 kg/s (360 lpm at sl) during feed   ==> avg flow = 180lpm
+Mean O2                =  21%
+
+Peak O2 level    33%    at 83 secs.  (~ 2cycles)
+
+
+The purge cycle is not very effective in getting rid of
+N2. We need to displace it with product stream . But we have none.
+
+Bed is almost ineffictive after 10 cycles.  Not viable.
+
+
+
+===================   Bed Parameters Used ==================================
+  constant Integer  Nc = 2               ; // 
+  constant Real R    = 8314.5            ; // Universal Gas Constant Pa. m3/(C kgmol)
+  constant Real Pref = 1e5               ; // Reference pressure (Pa)
+  constant Real Tref = 300               ; // Reference Temperature (K) 
+  constant Real Uref = 1.0               ; // Refernece Gas Velocity (m/s)
+  
+  constant Real Diff = 1e-3              ; // Axial dispersion Coeff  (m2/sec) 
+  constant Real L    = 0.25              ; // Adsorber Bed length (m)
+  constant Real mu   = 2.0e-5            ; // Air viscosity (kg/m.s)
+  constant Real dp   = 1.0e-3            ; // Adsorbent particle size (m)
+  constant Real dia  = 0.2               ; // Adsorber Bed diameter(m)
+  constant Real csArea = 3.147*dia*dia/4 ; // Bed CrossSectional Area (m2)   
+  constant Real Tbed = 300               ; // Adsorber temperature (K)
+  
+  constant Real qs[Nc]  = {5.26, 5.26}        ; // Langmuir Saturation Concentration (kgmol/m3)
+  constant Real hk[Nc]  = {14.8, 4.7}         ; // Henry's Constants (dim. less) (= qs * b)
+  constant Real k_m[Nc] = {19.7, 62.0}        ; // External Mass transfer rate s (1/s)
+  constant Real voidage = 0.5                 ; // Bed voidage
+  
+  // Derived quantities
+  constant Real Cref    = Pref / (R * Tref)             ; // Reference Molar Concentration (kgmol/m3)
+  constant Real b[Nc]   = hk ./ qs                      ; // Units m3/kgmol
+  constant Real Kozney  = 180 * mu * (1 - voidage)^2    
+                          / ( dp * dp * voidage^3 )    ; // KozneyCarman Eqn. Coeff. (pressure grad/vel)
+  
+  // These are the basic params the core model needs
+  constant Real Epsilon = (1 - voidage) / voidage     ;
+  constant Real Km[Nc]  = k_m * (L / Uref)            ;// Dim.less Mass trasnfer rate 
+  constant Real Kappa   = Kozney * L * Uref / Pref    ;// dp*/dz* = - Kappa* v*   (dimensionless)
+  constant Real Pe      = L * Uref / Diff             ;// Peclet number
+  constant Real B[Nc]   = b * Cref                    ;// Normalized b
+  constant Real Qs[Nc]  = qs / Cref                   ;// Normalized Saturation Concentration 
+  constant Real Tb      = Tbed / Tref                 ;// Adsorber temperature (isothermal)
+

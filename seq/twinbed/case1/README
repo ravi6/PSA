@@ -1,0 +1,78 @@
+problem appears to work only when mflowThreshod is 1e-3 why
+but the single bed problem does not have this issue. Why???
+(issue with common resevoirs ...having connect with several devices
+  similar to three valve problem ...???)
+Also, the threshold equaiton is not visible in c code? but some how
+appears to effect the solution ?? how investigate furhter
+
+
+A -   with regStep in B.C of adsorber
+B -   with Max function (C0 continuity but no C1 continuity)
+
+
+Well just forget every thing. Keep it simple. Just avoid regStep for 
+adsorber Boundary conditions. Using if statements and using m_flow as
+the variable for flow reversal ditermination. Earlier I was using 
+pressure drop. 
+
+1. Problem solved with mflowThreshold=1e-3, dpTol=1e3 (valve only)
+        Now all of the flow stuff from adsorber end turned out to be
+
+2  Without tweeking mflowThreshold Problem is solving but very slowly.
+
+
+Developed 3Node joiner. To avoid internal stream mixing alberaic equations.
+(P3Mixer.mo)
+
+
+plots directory has comparison plots between Default mflowThreshold Level=1e-7
+and other level of 1e-3. The first one took 11 hours to run to get 40sec. data.
+The second one took 23 minutes for the same 40sec. simulaiton.
+Closer examination of results showed very little difference. Except the media 
+density in the closed (almost closed? numerically) jumps like a yo yo from inlet
+to outlet ... since density switches with flow direction.
+
+Perhaps it is not a bad idea to use "sqrt(Rhoin * Rhoout)" for the valve afterall.
+
+=========================
+v1.11.0-dev.135+g30c4b4c
+=========================
+     Moved to above version. Problem solved in 4.5 hours ... 40 sec.
+How can I resolve this??  
+
+Unable to restart 40sec solution. Fails to initialize why? inconsistent initializaiton ???
+Tried to solve completely upto 360sec. Solution gaveup after 20 hours of computation
+problem failed at 90sec simulation with integration failure due to non-lin eqn 2080.
+Comparison of results with previous results showed good correspondence upto 40 sec.
+
+Why are we having issues with convergence ??? And why such slow integration speed?
+
+Restart issue relates to -iim switch. It should be set to default not none. And I need to
+declare all counters as descrete variables. That is another line of investigation.
+
+But for now, I am able to get converged solution in 40min for 40 sec simulaiton. I needed to 
+use mflowThreshold like before for the problem to solve this fast. Tried a crazy value of 0.01
+Results compard with 1e-3 threshold. And they are very similar.
+
+Another curious thing happened at time 34 sec. Rho value gets stuck at negeative values for a while
+but the solver eventually gets over it.
+
+Maximum flow magnitude is of the order of 0.01 kg/sec. I guess 1e-5 or 1e-4 threshold should be the correct value
+for flow reversal or zero flow implementations.
+
+I am going to slow down the valve responses to 0.5sec.  And see the effect too.
+
+Phew ... I figured that  by specifying nominal value  ... mixing node calculation uses
+mflowMin = nominalValue * mflowThreshold. That now explains why I can't use default mflowThreshold of 1e-7.
+and mflow_Threshold=1e-2 for nominalValue=5e-3 is good enough
+
+Noted that med.d can get negative ... even with good values for composition. This happens when
+med.d itself becomes an iteration variable. Replacing sqrt(med.d) in the valve eqn. with sqrt(abs(med.d))
+allowed the integration to proceed without non-linear solver getting stuck.
+
+Simulation succeeded for twin bed, with 0.5sec valve response, 1000Pa dpTol
+Everything compared well with other simulations that did not proceed well due to non-convergence.
+Tried rerunning with noRootFinding simulation stopped at 51.3sec. Again good correspondence to
+previous run. But simulaiton is slower. Both had issues of convergence at certain times.
+51.3, 61.3. Closer examination of data revealed %opening of Vout on both beds, is going to large negative
+and decay to zero after 2secs. 

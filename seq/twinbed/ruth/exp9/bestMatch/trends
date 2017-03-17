@@ -1,0 +1,88 @@
+#!/bin/bash
+# Set default values for the named Arguments
+fname=work/plant_res.csv
+B=A
+N=6
+
+# Use any over ridden values from user and echo the command that will execute
+eval "$1"
+echo $0 fname=$fname B=$B N=$N
+
+N2=$(($N/2))
+N1=$(($N-1))
+
+function nodes
+{
+omplot "bedA.outNode.Xi[1] bedB.outNode.Xi[1]  bedA.inNode.Xi[1] bedB.inNode.Xi[1]" $fname
+sleep 2
+omplot "bedA.outNode.p bedB.outNode.p  bedA.inNode.p bedB.inNode.p" $fname
+sleep 2
+omplot " der(bedA.outNode.m) der(bedB.outNode.m)" $fname
+sleep 2
+omplot " der(bedA.inNode.m) der(bedB.inNode.m)" $fname
+}
+
+function monitor
+{
+omplot "bed$B.adsbr.y[$N,2] bed$B.adsbr.y[$N1,2] --ylabel=O2"  $fname
+sleep 4
+omplot "bed$B.adsbr.p[$N2]  --ylabel=pbar"  $fname
+sleep 2
+omplot "bed$B.adsbr.u[$N1] bed$B.adsbr.u[$N2] bed$B.adsbr.u[$N] --ylabel=u"  $fname
+sleep 2
+omplot "bed$B.vin.inlet.m_flow bed$B.vout.inlet.m_flow vpurge.inlet.m_flow --ylabel=kg/s"  $fname
+}
+
+function valves
+{
+omplot "bed$B.vblow.spo bed$B.vblow.po  --ylabel=po"  $fname
+omplot "bed$B.vin.spo bed$B.vin.po  --ylabel=po"  $fname
+omplot "bed$B.vout.spo bed$B.vout.po  --ylabel=po"  $fname
+omplot "vpurge.spo vpurge.po  --ylabel=vp"  $fname
+}
+
+function misc
+{
+omplot "atm.port.m_flow --ylabel=bar"  $fname
+omplot "bedA.vblow.outlet.Xi_outflow[1] bedA.vblow.outlet.Xi_outflow[1]" $fname
+
+omplot "bedA.adsbr.y[6,2] --ylabel=O2"  $fname
+omplot " bedA.vout.inlet.m_flow   --ylabel=Outflowkg/s"  $fname
+omplot " bedA.vin.inlet.m_flow vpurge.inlet.m_flow --ylabel=InFlowkg/s"  $fname
+omplot " src.port.m_flow  --ylabel=InFlowkg/s"  $fname
+
+omplot "bedA.vin.po bedA.vout.po vpurge.po bedA.vblow.po" $fname
+omplot "bedA.adsbr.u[1] bedA.adsbr.u[2] bedA.adsbr.u[6] --ylabel=u"  $fname
+omplot "bedA.outNode.Q_in bedA.inNode.Q_in" $fname
+
+omplot "bedA.inNode.p bedB.inNode.p " $fname
+omplot "bedA.inNode.p bedB.inNode.p " $fname
+omplot "bedA.outNode.Xi[1] bedB.inNode.Xi[1]" $fname
+
+#omplot "bedA.seq.pressurizing bedA.seq.feeding" $fname
+#omplot "bedA.seq.purging bedA.seq.blowing" $fname
+#omplot "bed$B.vin.prat bed$B.vout.prat bed$B.vblow.prat vpurge.prat" $fname
+#omplot "bedA.adsbr.p[1] bedB.adsbr.p[1] --ylabel=bar"  $fname
+
+omplot "bedA.adsbr.u[1] bedA.adsbr.u[6] bedA.adsbr.u[12] --ylabel=u"  $fname
+omplot "bedA.adsbr.Q[1,1] bedA.adsbr.Q[6,1] bedA.adsbr.Q[12,1] --ylabel=Q_N2"  $fname
+omplot "bedA.adsbr.Q[1,2] bedA.adsbr.Q[6,2] bedA.adsbr.Q[12,2] --ylabel=Q_O2"  $fname
+omplot "bedA.adsbr.inlet.m_flow bedA.adsbr.outlet.m_flow   --ylabel=kg/s"  $fname
+
+omplot "bedA.adsbr.y[11,2] bedA.adsbr.y[6,2] bedA.adsbr.y[12,2] --ylabel=y_O2"  $fname
+omplot "bedA.adsbr.y[11,2] bedA.adsbr.y[6,2] bedA.adsbr.y[12,2] --ylabel=y_O2" work/plant_res.mat 
+}
+function coefs
+{
+  rm  -f  /tmp/jjj
+  echo -n omplot \" >> /tmp/jjj
+for i in 1 2 3 4 5 6
+do
+  #echo -n "bed$B.adsbr.Coef_y[$i,1]   " >> /tmp/jjj
+  echo -n "bed$B.adsbr.Coef_p[$i]   " >> /tmp/jjj
+done
+  echo -n \"  $fname >> /tmp/jjj
+  source /tmp/jjj
+}
+monitor
+#nodes

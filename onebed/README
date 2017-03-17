@@ -1,0 +1,4 @@
+Adsorber model copes well with flow reversals at both ends.
+When inlet pressure and outlet pressure are outof phase, integration failed at 30sec.
+(why??)
+

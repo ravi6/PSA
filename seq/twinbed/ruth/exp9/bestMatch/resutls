@@ -1,0 +1,16 @@
+
+file = exp9
+    time =  2000
+    delt =  1
+    O2 =  92.965
+    O2Recovery =  19.307
+    Min =    4.4858e-05
+    Mout =    2.6665e-06
+    Mblow =    4.2227e-05
+    Mpurge =    4.7538e-06
+    Qin =    3.8041e-05
+    Qout =    2.0561e-06
+    ProdMetanO2 =  94.757
+    ProdMeanOutflow =    2.5433e-06
+    MeanPurgeP =  1.1830
+

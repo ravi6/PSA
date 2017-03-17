@@ -1,0 +1,5 @@
+#!/bin/bash
+#OMPlot --plotParametric --curve-width=2 --filename="work/plant_res.mat" bedA.adsbr.inlet.m_flow bedA.vpurge.inlet.m_flow bedA.adsbr.inlet.m_flow bedA.vin.inlet.m_flow 
+   omplot "bedA.adsbr.inlet.m_flow  bedA.adsbr.outlet.m_flow  bedB.adsbr.inlet.m_flow  bedB.adsbr.outlet.m_flow"
+   omplot "bedA.adsbr.p_in bedA.adsbr.p_out bedB.adsbr.p_in bedB.adsbr.p_out" 
+   omplot "bedA.adsbr.outlet.Xi_outflow[1] bedB.adsbr.outlet.Xi_outflow[1]" 

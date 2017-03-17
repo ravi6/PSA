@@ -1,0 +1,15 @@
+source("data3");
+source("data5");
+source("data7");
+source("data10");
+x=data3.xs;
+
+set(0,'DefaultAxesFontSize',12); 
+plot(x,data3.u,x,data5.u,x,data7.u,x,data10.u,x,data10.v,'o');
+legend("N = 3","N = 5","N = 7","N = 10");
+xlabel("x");
+ylabel("u");
+title('u_{xx} - (x^6 + 3x^2)u = 0 ; ');
+grid("on");
+saveas(1,"result.jpg");
+pause

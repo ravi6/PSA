@@ -1,0 +1,6 @@
+loadFile("total.mo");
+cd("./work");
+buildModel(plant , outputFormat="mat", 
+         stopTime=40,   numberOfIntervals=500);
+getErrorString();
+print("Built Simulation\n");

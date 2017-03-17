@@ -1,0 +1,13 @@
+when two beds are connected to common sinks, sources 
+the convergence is effected. Tweeks to make it work only
+succeeded when I increased flowThreshold to 1e-3
+Problem takes longer to solve
+
+Tried completely independent twin beds. Strange as it may seem
+problem does not intialize at all. Renaming ports did not work either.
+just in case re-ordering makes any difference.
+
+Tried common inlet src for both beds. Presto, problem solves now.
+Also, I don't need to change flowThreshold at all.
+
+Tried common atm only. Runs awfully slowly. Took 1 hour for 4sec integ.
