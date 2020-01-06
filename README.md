@@ -1,1 +1,1 @@
-http://htmlpreview.github.io/?https://github.com/ravi6/PSA/index.html
+https://ravi6.github.io/PSA/
