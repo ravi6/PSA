@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>OBOGS Calculations</title>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(plot2);
+      google.charts.setOnLoadCallback(plot1);
+
+      ///////////////////////////////////////////////////////
+     function plot1() {
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Product Flow');
+        data.addColumn('number', 'Product');
+        data.addColumn('number', 'Waste');
+        ob = new obogs();
+       // 50psi pressure data
+         var pflow = [20.0, 30.0, 40.4, 50.0, 70.0, 89.5, 110.0, 129.5, 158.5, 188.5] ;
+         var pO2 = [96.2, 77.0, 64.5, 55.1, 46.2, 38.6, 34.0, 31.9, 30.1, 28.9];
+        
+       var rows = [] ;
+        var rejF = document.getElementById("rejF").value ;
+        var toxinAdsorbF = document.getElementById("toxinAdsorbF").value ;
+
+        for (i=0; i < pO2.length ; i++){
+          ob.run(pflow[i], pO2[i], rejF, toxinAdsorbF); // try rejectionF 0.8
+          rows.push([ob.prod, ob.prodO2, ob.wasteO2])
+       }
+      
+      data.addRows(rows);
+
+      // Set chart options
+      var options = {title: 'OBOGS Performance @50psig (measured)',
+                     width:400,
+                     height: 500,
+                     curveType: 'function',
+                        legend: { position: 'top' },
+                     pointSize: 10,
+                     hAxis: {title: 'Product Flow Rate (lpm)',
+                             ticks: [20, 40, 60, 80, 100, 120, 140, 160]},
+                     vAxis: {title: '%O2'},
+                     };
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.LineChart(document.getElementById('plot1'));
+      chart.draw(data, options);
+       
+    } // end plot1
+ 
+    ///////////////////////////////////////////////////////
+    function plot2() {
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Product Flow');
+        data.addColumn('number', 'Product');
+        data.addColumn('number', 'Waste');
+        ob = new obogs();
+       // 50psi pressure data
+         var pflow = [20.0, 30.0, 40.4, 50.0, 70.0, 89.5, 110.0, 129.5, 158.5, 188.5] ;
+         var pO2 = [96.2, 77.0, 64.5, 55.1, 46.2, 38.6, 34.0, 31.9, 30.1, 28.9];
+        
+       var rows = [] ;
+        var rejF = document.getElementById("rejF").value ;
+        var toxinAdsorbF = document.getElementById("toxinAdsorbF").value ;
+ 
+        for (i=0; i < pO2.length ; i++){
+          ob.run(pflow[i], pO2[i], rejF, toxinAdsorbF); // try rejectionF 0.8
+          rows.push([ob.prod, ob.toxinProd, ob.toxinWaste]) ;
+       }
+      
+      data.addRows(rows);
+
+      // Set chart options
+      var options = {title: 'OBOGS Estimated Performance (Contaminant)',
+                     width: 400,
+                     height: 500,
+                    curveType: 'function',
+                        legend: { position: 'top' },
+                     pointSize: 10,
+                     hAxis: {title: 'Product Flow Rate (lpm)',
+                             ticks: [20, 40, 60, 80, 100, 120, 140, 160]},
+                     vAxis: {title: 'Contaminant (ppm)',
+                             viewWindowMode:'explicit',
+                            viewWindow: {min: 0, max: 120},}
+                    }
+
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.LineChart(document.getElementById('plot2'));
+      console.log(data);
+      chart.draw(data, options);
+       
+    } // end plot2
+      
+ 
+    </script>   
+  </head>
+
+<script type="text/javascript">      
+   class obogs {
+    constructor () {
+      this.inletO2 = 21 ;      
+      this.toxinInlet = 100 ; //ppm
+    }
+
+     run (prod, prodO2, rejF, toxinAdsorbF) {
+      this.prod = prod ;
+      this.prodO2 = prodO2 ;
+      this.rejF = rejF ;
+      this.toxinAdsorbF = toxinAdsorbF ;
+      this.inlet = this.prod/(1 - this.rejF) ;
+      this.waste =  this.inlet - this.prod  ;
+      this.wasteO2 = (this.inlet * this.inletO2 - this.prod * this.prodO2) / this.waste ;
+       
+      // fraction of N2 in Product
+      this.fN2inProd = this.prod * (100 - this.prodO2) / (this.inlet * (100 - this.inletO2)) ;
+      this.fN2inWaste = this.waste * (100 - this.wasteO2) / (this.inlet * (100 - this.inletO2)) ;
+       
+       
+      // Calculate Toxin concentration given extent of adsorption in bdd
+     // var unAdsorbed = this.toxinInlet  * this.inlet *  (1 - this.toxinAdsorbF);
+     // this.toxinProd =  unAdsorbed * (1 - this.rejF) / this.prod ;                                      
+     // this.toxinWaste = unAdsorbed   * this.rejF / this.waste ;  
+    
+      this.toxinProd = this.toxinInlet * this.inlet * this.fN2inProd / this.prod  ; // assuming it is similar to N2
+      this.toxinWaste = this.toxinInlet * this.inlet * this.fN2inWaste / this.waste ; 
+                                         
+     }
+
+   } // end of Obogs class
+ 
+  </script>
+
+    <div class="container">
+ <h2> Quick assessment of contaminant concentration in OBOGS product </h2>
+      <h5>Author: Ravi Saripalli</h5>
+      <h6>4th March 2023   (version: 1.0) </h6>
+    <div class="row align-items-start">
+        <div class="col">
+          <div id="plot1" style="border: 1px solid #ccc"></div>
+        </div>
+        <div class="col">
+          <div id="plot2" style="border: 1px solid #ccc"></div> 
+        </div>
+    </div>
+
+
+  Rejection Factor (waste flow / inlet flow)   
+      <input class="w-25 shadow bg-white rounded" type="range" id=rejF class="form-range"
+                            width=100,
+                             min=0.8 max=0.98 value=0.85 step=0.01 
+                            onChange="plot1(); plot2() ;"
+        oninput="this.nextElementSibling.value = this.value">
+                  
+        </input>   
+      <output>0.7</output>
+      
+    <div style="display:none">
+       Toxin Adsorption Factor  <input type="range" id=toxinAdsorbF 
+                                    min=0 max=0.95 value=0.7 step=0.01 
+                                  onChange="plot2();"
+                                  oninput="this.nextElementSibling.value = this.value">
+       </input>
+       <output>0.7</output>
+    </div>
+
+  </div>
+ <p class="text-primary">
+   The purpose of this note is to communicate results of analysis, that
+   would estimate extent of changes in concentration of unspecified contaminant
+   in product stream due to adsorption/desorption in OBOGS bed. The interest here
+   is not to examine specific contamiant, but to guage the relative changes in 
+   contaminant concentration between inlet and product streams at different throughputs,
+   with the  crude assumption that it follows adsborption
+   and desorption characteristics of N2. 
+ </p>
+  
+  <p class="text-primary">
+    The performance curve for OBOGS presented above is from the experimental
+    data obtained at 50psig supply pressure. Waste stream O2 level is 
+    calculated with assumed rejection factor which is defined
+    as the ratio of product air flow to the inlet air flow rate
+    to the OBOGS unit. This rejection ratio depends on the operating
+    conditions of the OBOGS unit 
+    (such as operating pressure, cycle times of pressurization, 
+    depressurization, pressure equalizaiton). Strictly speaking the rejection 
+    factor could vary with throughput. But for this analysis it is assumed to be
+    constant over the range of product flows considered as the measured data of waste flow
+    rate was not readily available.
+  </p>
+    
+<p class="text-primary">
+    Assuming the conentraton of an unspecified contaminant in the
+  feed stream to be 100ppm, and utilizing the experimental data presented earlier,
+  the concentraion of contaminant in the product and waste streams were
+  calculated (and graphed in the second chart above) with the following assumption.
+ 
+</p>
+ <p class="text-info">
+  
+    The ontaminant is adsorbed by the 
+    bed to the same degree the nitrogen is adsorbed. With this
+    assumption, we set  
+    the fraction of contaminant stream in the product stream 
+    relative to the inlet stream is of the same magnitude as
+      the fraction of N2 that appears in the
+    product stream relative to the inlet stream.
+    Similar assumption is made for the waste stream as well.
+     
+  </p>
+
+<p class="text-primary">
+    According to this analysis, it shows that as the product flow
+  rate is increased, the contaminant concentration would increase with it
+  similar to increase in N2 concentration.
+  Consequently any strategy of reducing the O2 level in the product stream
+  through increasing throughput, would invariably increases the concentration
+  of contaminant. 
+
+    Specifically, if one is considering reducing the 
+  concentraion of O2 level at say breathing
+  rate of 20lpm with corresponding 96% O2 
+  to 60% by doubling product flow to 40lpm
+  and dumping the additional 20lpm, there will
+  be roughly nine fold increase in the 
+  contaminant concentration in product (5ppm to 45ppm)
+
+</p>
+
+    </div>
+
+    
+    <div>
+</html>
